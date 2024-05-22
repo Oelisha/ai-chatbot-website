@@ -7,6 +7,7 @@ function Home() {
       <section className="flex flex-col gap-6">
         <Text variant="h1">Chat with Forrest Gump</Text>
         <Text className="text-zinc-600">
+          hello world
           Ever wanted to chat with Forrest? Well, now is your chance! Try asking him about his shrimping business. Bubba would be proud...
         </Text>
       </section>
