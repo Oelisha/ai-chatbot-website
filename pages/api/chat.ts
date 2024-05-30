@@ -1,4 +1,4 @@
-import { type ChatGPTMessage } from '../../components/ChatLine'
+/*import { type ChatGPTMessage } from '../../components/ChatLine'
 import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
 
 // Break the app if the API key is missing
@@ -39,4 +39,42 @@ const handler = async (req: Request): Promise<Response> => {
   const stream = await OpenAIStream(payload)
   return new Response(stream)
 }
-export default handler
+export default handler*/
+
+import fetch from 'node-fetch';
+import { type ChatGPTMessage } from '../../components/ChatLine'
+import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
+import OpenAI from "openai";
+
+const { Configuration, OpenAIApi } = require('openai');
+
+// Initialize the OpenAI API client
+//const configuration = new Configuration({
+    //apiKey: process.env.OPENAI_API_KEY, // Ensure you have set the API key in your environment
+//    apiKey:process.env.OPENAI_API_KEY
+    //dangerouslyAllowBrowser: true,
+//  });
+const configuration = new Configuration({
+  apiKey: process.env.SOCCER_API_KEY
+});
+const openai = new OpenAIApi(configuration);
+
+// Function to interact with the custom assistant
+async function interactWithAssistant(prompt: string) {
+    try {
+        const response = await openai.createCompletion({
+            model: 'asst_0nZxiZCrqPruUSAmc1WK2jJr', // Specify your custom assistant model
+            prompt: prompt,
+            max_tokens: 150, // Adjust the max tokens as per your requirement
+        });
+
+        console.log(response.data.choices[0].text.trim());
+    } catch (error) {
+        console.error("Error interacting with the assistant:", error);
+    }
+}
+
+// Example usage
+const userPrompt = "What is the weather like today?";
+interactWithAssistant(userPrompt);
+

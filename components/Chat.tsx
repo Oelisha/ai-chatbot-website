@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+/*import { useEffect, useState } from 'react'
 import { Button } from './Button'
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from './ChatLine'
 import { useCookies } from 'react-cookie'
@@ -133,4 +133,122 @@ export function Chat() {
       />
     </div>
   )
+}
+*/
+
+
+
+import { useEffect, useState } from 'react';
+import { Button } from './Button';
+import { type ChatGPTMessage, ChatLine, LoadingChatLine } from './ChatLine';
+import { useCookies } from 'react-cookie';
+
+const COOKIE_NAME = 'nextjs-example-ai-chat-gpt3';
+
+export const initialMessages: ChatGPTMessage[] = [
+  {
+    role: 'assistant',
+    content: "Hi I'm a super agent, what player data would you like for the team?",
+  },
+];
+
+const InputMessage = ({ input, setInput, sendMessage }: any) => (
+  <div className="mt-6 flex clear-both">
+    <input
+      type="text"
+      aria-label="chat input"
+      required
+      className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm"
+      value={input}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          sendMessage(input);
+          setInput('');
+        }
+      }}
+      onChange={(e) => {
+        setInput(e.target.value);
+      }}
+    />
+    <Button
+      type="submit"
+      className="ml-4 flex-none"
+      onClick={() => {
+        sendMessage(input);
+        setInput('');
+      }}
+    >
+      Send
+    </Button>
+  </div>
+);
+
+export function Chat() {
+  const [messages, setMessages] = useState<ChatGPTMessage[]>(initialMessages);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [cookie, setCookie] = useCookies([COOKIE_NAME]);
+
+  useEffect(() => {
+    if (!cookie[COOKIE_NAME]) {
+      const randomId = Math.random().toString(36).substring(7);
+      setCookie(COOKIE_NAME, randomId);
+    }
+  }, [cookie, setCookie]);
+
+  const sendMessage = async (message: string) => {
+    setLoading(true);
+    const newMessages = [
+      ...messages,
+      { role: 'user', content: message } as ChatGPTMessage,
+    ];
+    setMessages(newMessages);
+    const last10messages = newMessages.slice(-10);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: last10messages,
+          user: cookie[COOKIE_NAME],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const data = await response.json();
+      const assistantMessage = data.assistant;
+
+      setMessages([
+        ...newMessages,
+        { role: 'assistant', content: assistantMessage.content } as ChatGPTMessage,
+      ]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border-gray-300 lg:border lg:p-6">
+      {messages.map(({ content, role }, index) => (
+        <ChatLine key={index} role={role} content={content} />
+      ))}
+
+      {loading && <LoadingChatLine />}
+
+      {messages.length < 2 && (
+        <span className="mx-auto flex flex-grow text-gray-600 clear-both">
+          Write here the data you want (for example a player with at least 30 passes with an accuracy of 70%)
+        </span>
+      )}
+      <InputMessage input={input} setInput={setInput} sendMessage={sendMessage} />
+    </div>
+  );
 }

@@ -10,15 +10,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@metamask/detect-provider": "^2.0.0",
     "@vercel/analytics": "^0.1.11",
     "@vercel/examples-ui": "^1.0.5",
+    "axios": "^1.7.2",
     "clsx": "^1.2.1",
     "eventsource-parser": "^0.1.0",
     "next": "latest",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.47.2",
     "react": "latest",
     "react-cookie": "^4.1.1",
     "react-dom": "latest",
-    "react-wrap-balancer": "^0.1.5"
+    "react-wrap-balancer": "^0.1.5",
+    "web3": "^4.9.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.45",
