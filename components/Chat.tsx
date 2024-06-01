@@ -148,7 +148,7 @@ const COOKIE_NAME = 'nextjs-example-ai-chat-gpt3';
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: 'assistant',
-    content: "Hi I'm a super agent, what player data would you like for the team?",
+    content: "Hello, I'm Marko, your smart athletes search services bot, So that I can make the player search process easier for you, please write a full description of your required player. ",
   },
 ];
 
@@ -245,7 +245,8 @@ export function Chat() {
 
       {messages.length < 2 && (
         <span className="mx-auto flex flex-grow text-gray-600 clear-both">
-          Write here the data you want (for example a player with at least 30 passes with an accuracy of 70%)
+           When writing, please be sure to enter all the details you know about the player you are looking for, and then click the "Search" button. (For example: the player's position, height, age, percentage of passing success, average number of goals per season/number of goals last season, etc).
+
         </span>
       )}
       <InputMessage input={input} setInput={setInput} sendMessage={sendMessage} />
